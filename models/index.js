@@ -42,64 +42,10 @@ Object.keys(db).forEach((modelName) => {
 
 //Associations
 
-//permissions
-// db.test.hasMany(db.test_subject_item, { foreignKey: "Test_ID" });
-
-// //test foreign key
-// db.test_questions.belongsTo(db.test, {
-//   foreignKey: "Test_ID",
-//   sourceKey: "ID",
-// });
-// db.test_subject_marks.belongsTo(db.test, {
-//   foreignKey: "Test_ID",
-//   sourceKey: "ID",
-// });
-// db.test_user_mapping.belongsTo(db.test, {
-//   foreignKey: "Test_ID",
-//   sourceKey: "ID",
-// });
-// db.test_user_question_attempt.belongsTo(db.test, {
-//   foreignKey: "Test_ID",
-//   sourceKey: "ID",
-// });
-
-// //subject foreign key
-// db.test_subject_marks.belongsTo(db.subject, {
-//   foreignKey: "Subject_ID",
-//   sourceKey: "ID",
-// });
-// db.test_subject_item.belongsTo(db.subject, {
-//   foreignKey: "Subject_ID",
-//   sourceKey: "ID",
-// });
-// db.question_bank.belongsTo(db.subject, {
-//   foreignKey: "Subject_ID",
-//   sourceKey: "ID",
-// });
-
-// //user foreign key
-// db.test_subject_marks.belongsTo(db.user, {
-//   foreignKey: "User_ID",
-//   sourceKey: "ID",
-// });
-// db.test_user_mapping.belongsTo(db.user, {
-//   foreignKey: "User_ID",
-//   sourceKey: "ID",
-// });
-// db.test_user_question_attempt.belongsTo(db.user, {
-//   foreignKey: "User_ID",
-//   sourceKey: "ID",
-// });
-
-// //question foreign key
-// db.test_questions.belongsTo(db.question_bank, {
-//   foreignKey: "Question_ID",
-//   sourceKey: "ID",
-// });
-// db.test_user_question_attempt.belongsTo(db.question_bank, {
-//   foreignKey: "Question_ID",
-//   sourceKey: "ID",
-// });
+db.recipe.belongsTo(db.user, {
+  foreignKey: "Creator_ID",
+  sourceKey: "ID",
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

@@ -20,24 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      Profile_Pic: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      Mobile: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        unique: true,
-      },
-      DOB: {
-        type: DataTypes.DATEONLY,
-        allowNull: true,
-      },
-      Age: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      Email: {
+      User_ID: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -52,35 +35,10 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      User_Type: {
-        type: DataTypes.ENUM("Admin", "User"),
-        allowNull: false,
-        defaultValue: "User",
-      },
-      OTP: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      Status: {
-        type: DataTypes.ENUM("Active", "In Active"),
-        allowNull: false,
-        defaultValue: "Active",
-      },
-      Created_By: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      Updated_By: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      Deleted_By: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
     },
     {
       // freezeTableName: true,
+      initialAutoIncrement: 101,
       engine: "InnoDB",
       charset: "utf8mb4",
       // underscored: true,

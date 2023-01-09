@@ -3,17 +3,20 @@ const { check, body } = require("express-validator");
 const loginValid = () => {
   return [
     [
-      check("username")
-        .trim()
-        .isEmail()
-        .withMessage("please enter valid email."),
-      check("password")
+      check("Username")
         .trim()
         .not()
         .isEmpty()
-        .withMessage("password can not be empty")
-        .isLength({ min: 8 })
-        .withMessage("password length should not be less than 8 characters"),
+        .withMessage("Username can not be empty")
+        .isLength({ min: 2 })
+        .withMessage("Username length should not be less than 2 characters"),
+      check("Password")
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage("Password can not be empty")
+        .isLength({ min: 2 })
+        .withMessage("Password length should not be less than 2 characters"),
     ],
   ];
 };

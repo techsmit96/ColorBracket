@@ -28,26 +28,6 @@ router.post("/signup", signup_valid.signupValid(), signup);
 router.post("/signin", login_valid.loginValid(), login);
 // router.post("/adminLogin", login_valid.loginValid(), adminLogin);
 router.post("/logout", protect, logout);
-router.post(
-  "/changePassword",
-  change_pass_valid.saveValid(),
-  protect,
-  changePassword
-);
-router.post("/forgotPassword", email_valid.saveValid(), forgotPassword);
-router.post(
-  "/updatePassword",
-  email_valid.saveValid(),
-  update_pass_valid.saveValid(),
-  updatePassword
-);
-router.post("/resendOTP", email_valid.saveValid(), resendOTP);
-router.post(
-  "/verifyOTP",
-  email_valid.saveValid(),
-  otp_valid.saveValid(),
-  verifyOTP
-);
 
 //User Crud Routes
 router.post("/", protect, authorize(process.env.ADMIN), getUsers);

@@ -16,11 +16,16 @@ exports.signup = asyncHandler(async (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(200).jsonp({ sucess: false, data: errors.array() });
   } else {
-    const user = await db.user.create(req.body);
+    let item = {
+      Name: req.body.Name,
+      User_ID: req.body.Username,
+      Password: req.body.Password,
+    };
+    const user = await db.user.create(item);
 
     res.status(200).json({
       success: true,
-      message: `User registered`,
+      message: `User registered.`,
     });
   }
 });
@@ -30,25 +35,25 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(200).jsonp({ sucess: false, data: errors.array() });
   } else {
-    const { username, password } = req.body;
-    console.log(username, password);
+    const { Username, Password } = req.body;
+    console.log(Username, Password);
     // if (!username || !password)
     //   return next(
     //     new ErrorResponse(`Please provide an username and password`),
     //     400
     //   );
-    console.log("req body", req.body);
+
     //Check user exist
     const user = await db.user.findOne({
       where: {
-        Email: username,
+        User_ID: Username,
       },
     });
 
     if (!user) return next(new ErrorResponse(`Invalid credentials`, 400));
 
     //Match Password
-    const isMatch = await user.matchPassword(password, user.Password);
+    const isMatch = await user.matchPassword(Password, user.Password);
 
     if (!isMatch) return next(new ErrorResponse(`Invalid credentials`, 400));
 
@@ -92,178 +97,7 @@ const sendTokenReponse = async (user, statusCode, res) => {
   });
 };
 
-exports.changePassword = asyncHandler(async (req, res, next) => {
-  const errors = validateInput(req);
-  if (!errors.isEmpty()) {
-    return res.status(200).jsonp({ sucess: false, data: errors.array() });
-  } else {
-    const { Old_Password, New_Password } = req.body;
-    let formOldPassword = Old_Password;
-    let loggedPassword = await db.user.findByPk(req.user.ID);
-    const isMatch = await bcrypt.compare(
-      formOldPassword,
-      loggedPassword.Password
-    );
-    if (!isMatch) {
-      return res.status(400).json({ errors: [{ msg: "Invalid credentials" }] });
-    }
-    const user = await db.user.update(
-      { Password: New_Password },
-      {
-        where: {
-          id: req.user.ID,
-        },
-      }
-    );
 
-    if (user == 0) return next(new ErrorResponse(`User not found`, 500));
-
-    res.status(200).json({
-      success: true,
-      message: `Password changed`,
-    });
-  }
-});
-
-exports.forgotPassword = asyncHandler(async (req, res, next) => {
-  const errors = validateInput(req);
-  if (!errors.isEmpty()) {
-    return res.status(200).jsonp({ sucess: false, data: errors.array() });
-  } else {
-    const { Email } = req.body;
-
-    let user = await db.user.findOne({
-      where: {
-        Email: Email,
-      },
-    });
-
-    if (!user) {
-      return res.status(200).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-    let OTP = getOTP();
-    console.log("OTP show", OTP);
-    let a = await db.user.update(
-      {
-        OTP: OTP,
-      },
-      {
-        where: {
-          Email: Email,
-        },
-      }
-    );
-    console.log(a);
-    //Match Password
-    let userEmail = user.dataValues.Email;
-    let userName = user.dataValues.Name;
-    console.log(process.env.EMAIL_FLAG);
-    if (process.env.EMAIL_FLAG) {
-      new EmailSender().sendOTPToUser(userEmail, userName, OTP);
-    }
-    return res.status(200).json({
-      success: true,
-      message: "OTP send sucessfully.",
-    });
-  }
-});
-
-exports.updatePassword = asyncHandler(async (req, res, next) => {
-  const errors = validateInput(req);
-  if (!errors.isEmpty()) {
-    return res.status(200).jsonp({ sucess: false, data: errors.array() });
-  } else {
-    const { Email, New_Password } = req.body;
-
-    await db.user.update(
-      { Password: New_Password },
-      {
-        where: {
-          Email: Email,
-        },
-      }
-    );
-
-    res
-      .status(200)
-      .json({ success: true, msg: "password changed successfully" });
-  }
-});
-
-exports.resendOTP = asyncHandler(async (req, res, next) => {
-  const errors = validateInput(req);
-  if (!errors.isEmpty()) {
-    return res.status(200).jsonp({ sucess: false, data: errors.array() });
-  } else {
-    const { Email } = req.body;
-
-    //Check user exist
-    const user = await db.user.findOne({
-      where: {
-        Email: Email,
-      },
-    });
-
-    if (!user) {
-      return res.status(200).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-
-    let OTP = getOTP();
-    await db.user.update(
-      {
-        OTP: OTP,
-      },
-      {
-        where: {
-          Email: Email,
-        },
-      }
-    );
-    //Match Password
-    let userEmail = user.dataValues.Email;
-    let userName = user.dataValues.Name;
-    if (process.env.EMAIL_FLAG) {
-      new EmailSender().sendOTPToUser(userEmail, userName, OTP);
-    }
-    return res.status(200).json({
-      success: true,
-      message: "OTP send sucessfully.",
-    });
-  }
-});
-
-exports.verifyOTP = asyncHandler(async (req, res, next) => {
-  const errors = validateInput(req);
-  if (!errors.isEmpty()) {
-    return res.status(200).jsonp({ sucess: false, data: errors.array() });
-  } else {
-    const { Email, OTP } = req.body;
-
-    //Check user exist
-    const user = await db.user.findOne({
-      where: {
-        Email: Email,
-      },
-    });
-    if (user.dataValues.OTP != OTP) {
-      return res.status(200).json({
-        success: false,
-        message: "Invalid OTP.",
-      });
-    }
-    // sendTokenReponse(user, 200, res);
-    return res.status(200).json({
-      success: true,
-      message: "OTP successfully validated.",
-    });
-  }
-});
 
 //CRUD Operations
 exports.getUsers = asyncHandler(async (req, res, next) => {

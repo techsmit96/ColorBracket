@@ -18,6 +18,9 @@ const { protect, authorize } = require("./middleware/auth");
 
 //Routes files
 const userRoute = require("./routes/user.routes");
+const recipeRoute = require("./routes/recipe.routes");
+const ingredientRoute = require("./routes/ingredient.routes");
+const processRoute = require("./routes/process.routes");
 
 //Request logger
 const morgan = require("morgan");
@@ -47,6 +50,9 @@ if (process.env.NODE_ENV === "development") {
 
 //Routes
 app.use("/api/auth", userRoute);
+app.use("/api/recipe", recipeRoute);
+app.use("/api/ingredient", ingredientRoute);
+app.use("/api/process", processRoute);
 
 //Error Handler
 app.use(errorHandler);
